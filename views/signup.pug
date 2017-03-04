@@ -1,0 +1,25 @@
+doctype html
+
+html
+	head
+		title="Sign up"
+		style
+			include custom.css		
+	body
+		//- include navbar.pug
+		div(class="form-container")
+			div(class="form")
+				h2 Sign up
+				form(method="POST" action="signuphandler") 
+					input(type="text" name="firstName" value="First name") 
+					br
+					input(type="text" name="lastName" value="Last name")
+					br
+					input(type="text" name="email" value="email")
+					br
+					input(type="password" name="password" value="Password")
+					br
+					input(type="password" name="passwordCheck" value="Password")
+					br
+					button(type="submit" value="submit") Sign up
+			

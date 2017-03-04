@@ -1,0 +1,41 @@
+
+style
+	include navbar.css
+
+if userId  
+	div(class="navbar")
+		ul
+			li
+				a(href="home") home
+			ul(class="dropdown")
+				li
+					a(href="viewmessages") all messages 
+				li
+					a(href="viewmessagesofuser") own messages 
+				li
+					a(href="viewfollowed") view followed
+				li
+					a(href="viewfollowers") view followers
+				li
+					a(href="postmessage") post message
+
+		ul(class="in-out")
+			li
+				a(href="logout") logout
+			li
+				a(href="profile")  profile				
+
+else 
+	div(class="navbar")
+		ul
+			li
+				a(href="home") home
+			li
+				a(href="viewmessages") all messages
+
+		ul(class="in-out")
+			li
+				a(href="login") login
+			li |
+			li
+				a(href="signup") signup

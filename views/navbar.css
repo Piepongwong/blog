@@ -1,0 +1,34 @@
+.navbar {
+	border-top: 8px solid #33b5e5;
+	border-bottom: 3px solid #33b5e5;
+	background: #ffffff;
+}
+
+.navbar ul {
+	margin: 0;
+	padding: 0;
+	display: inline-block;	
+	list-style-type: none;
+}
+
+.navbar li {
+	padding: 10px 10px;
+	display: inline-block;
+}
+
+.navbar li a {
+	text-decoration: none;
+	color: black;
+}
+
+.navbar .in-out  {
+	float: right;
+}
+
+/*.navbar .in-out li:first-child {
+	border-right: 1px solid #33b5e5;
+}*/
+
+.navbar li:hover {
+	background-color: #178ab4;
+}

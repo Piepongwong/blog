@@ -1,0 +1,27 @@
+html
+	head
+		title="Show messages"
+
+		style
+			include custom.css
+	body
+		include navbar.pug
+		div(class="container")
+			div(class="message-container")
+				each message in allPosts
+					div(class="message-comment-container")
+					div(class="message")
+						b #{message.title}
+						p #{message.body}
+					div(class="comments")
+						if message.comments
+							each comment in message.comments
+								p #{comment.body}
+									div(class="comment-user")
+										p #{comment.firstName}
+					form(method="POST" action="postcommenthandler")
+						input(type="text" name="body")
+						input(type="hidden" name="postId" value=message.id)
+						button(type="submit" value="comment") Comment
+
+

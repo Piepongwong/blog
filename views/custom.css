@@ -1,0 +1,109 @@
+body {
+  color: black;
+  font-family: 'RobotoDraft', 'Roboto', sans-serif;
+  font-size: 15;
+  background: #e6e6ff;
+
+}
+
+.container {
+	background: #e6e6ff;
+	z-index: -1;
+}
+	
+.form-container	 {
+  position: relative;
+  background: #ffffff;
+  max-width: 320px;
+  width: 100%;
+  border-top: 5px solid #33b5e5;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  margin-top: 10%;
+}
+
+.form-container .form h2 {
+  margin: 5px 0 20px;
+  color: #33b5e5;
+  font-size: 18px;
+  outline: none;
+ }
+
+ .form-container .form input, .message-container .input {
+  outline: none;
+  display: block;
+  border: 1px solid #d9d9d9;
+  margin: 0 0 20px;
+  padding: 10px 0px;
+  width: 100%;
+ }
+
+ .form-container .form input:focus, .message-container input:focus {
+   border: 1px solid #33b5e5;
+   color: #333333;	
+ }
+
+ .form-container .form button{
+ 	outline: none;
+ 	display: block;
+ 	border: 1px solid #d9d9d9;
+  	margin: 0 0 20px;
+  	padding: 10px 15px;
+  	width: 100%;
+
+ }
+
+ .form-container .form button:hover {
+ 	  background: #178ab4;
+ }
+
+ .message-container {
+   	background: #ffffff;	
+ 	width: 50%;
+ 	margin: 0 auto;
+ 	display: block;
+ 	margin-top: 2%;
+ }
+
+
+.container .message-container .message-comment-container {
+	height: 20px;
+	background-color: #e6e6ff;
+}
+
+ .message-container .message {
+ 	border-top: 5px solid #33b5e5;
+ }
+
+ .message-container .comments, .followed-card, .followers-card {
+ 	border-top: 2px dashed #33b5e5;
+ 	margin-left: 25px;
+ 	font-size: 10;
+ 	margin-bottom: 5px;
+ }
+
+ .message-container input {
+  border: 1px solid #d9d9d9;
+  color: grey;	
+  padding: 5px 15px;
+ }
+ 
+ .message-container button {
+ 	outline: none;
+ 	border: 1px solid #d9d9d9;
+  	margin: 0 auto;
+  	padding: 5px 15px;
+ }
+
+ .message-container .comment-user {
+ 	font-size: 7;
+ 	margin-left: 5px;
+
+ }
+
+ .date {
+  display: inline-block;
+  float:right;
+  margin-right: 40px;
+  font-size: 8;
+ }

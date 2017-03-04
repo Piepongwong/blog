@@ -1,0 +1,22 @@
+html
+	head
+		title="Show followers"
+		style
+			include custom.css
+	body
+		include navbar
+		if followers[0] == undefined
+			p You have no followers
+		each user in followers
+			div(id="total" + user.id)
+				img(src='images/user-icon.png', width="25", id=user.id)
+				div(class="followers-card" id=user.id)
+					p #{user.firstName}
+					p #{user.lastName}
+					p #{user.email}
+
+		script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+
+		script
+			include javascript.js
+

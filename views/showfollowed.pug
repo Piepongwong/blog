@@ -1,0 +1,22 @@
+html
+	head
+		title="Show followed"
+		style
+			include custom.css
+	body
+		include navbar
+		if followed[0] == undefined
+			p You follow nobody
+		each user in followed
+			div(id="total" + user.id)
+				img(src='images/unfollow.png', width="25", id=user.id, class='unfollow')
+				div(class="followed-card" id=user.id)
+					p #{user.firstName}
+					p #{user.lastName}
+					p #{user.email}
+
+		script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+
+		script
+			include javascript.js
+

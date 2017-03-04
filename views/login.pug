@@ -1,0 +1,19 @@
+doctype html
+
+html
+	head
+		title="Log in"
+		style
+			include custom.css
+	body
+		//- include navbar.pug
+		div(class="form-container")
+			div(class="form")
+				h2 Login to your account
+				form(method="POST" action="loginhandler") 
+					input(type="text" name="email" value="email")
+					br
+					input(type="password" name="password" value="Password")
+					br
+					button(type="submit" value="submit") Login
+				

@@ -1,0 +1,35 @@
+html
+	head
+		title="Show messages"
+
+		style
+			include custom.css
+	body
+		include navbar.pug
+		div(class="container")
+			div(class="message-container")
+				each message in posts
+					div(class="message-comment-container")
+					div(class="message")
+						if message.user != null
+							img(src="images/follow-icon.png", width="25" id=message.user.id , class="follow")
+							p(class="date") #{message.updatedAt}
+							p #{message.user.firstName}
+							p #{message.title}
+							p #{message.body}
+					div(class="comments")
+						if message.comments != null
+							each comment in message.comments
+								p(class="date") #{comment.updatedAt}
+								p #{comment.body}
+								if message.user.firstName != null
+									p #{message.user.firstName}
+					form(method="POST" action="postcommenthandler")
+						input(type="text" name="body")
+						input(type="hidden" name="postId" value=message.id)
+						button(type="submit" value="comment") Comment
+			
+		script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+
+		script
+			include javascript.js
