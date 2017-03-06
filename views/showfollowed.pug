@@ -5,9 +5,9 @@ html
 			include custom.css
 	body
 		include navbar
-		if followed[0] == undefined
+		if followeds[0] == undefined
 			p You follow nobody
-		each user in followed
+		each user in followeds
 			div(id="total" + user.id)
 				img(src='images/unfollow.png', width="25", id=user.id, class='unfollow')
 				div(class="followed-card" id=user.id)

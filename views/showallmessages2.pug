@@ -14,16 +14,18 @@ html
 						if message.user != null
 							img(src="images/follow-icon.png", width="25" id=message.user.id , class="follow")
 							p(class="date") #{message.updatedAt}
-							p #{message.user.firstName}
-							p #{message.title}
-							p #{message.body}
+							b 	#{message.user.firstName}
+						else
+							b 	Anonymous
+						p #{message.title}
+						p #{message.body}
 					div(class="comments")
 						if message.comments != null
 							each comment in message.comments
 								p(class="date") #{comment.updatedAt}
 								p #{comment.body}
 								if message.user.firstName != null
-									p #{message.user.firstName}
+									p by : 		#{message.user.firstName}
 					form(method="POST" action="postcommenthandler")
 						input(type="text" name="body")
 						input(type="hidden" name="postId" value=message.id)

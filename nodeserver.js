@@ -7,7 +7,7 @@ let app = express()
 let User = db.User
 let Post = db.Post
 let Comment = db.Comment
-let sequelize = db.sequelize
+let sequelize = db.sequelize	
 
 //necessary?
 app.use(bodyParser.urlencoded({ extended: true })); 
@@ -15,14 +15,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'pug');
 app.set('views','./views');
 app.use(express.static('public'))
-// app.use(express.urlencoded()); // to support URL-encoded bodies
 
 app.use(session({
-    secret: 'oh wow very secret much security',
+	secret: "wow much secret very security",
     resave: true,
     saveUninitialized: false
 }));
 
+app.get("/search", function(req, res) {
+	let userId = req.session.userId
+	res.render("search", {userId})
+})
+
+app.get("/searchpost", function (req, res) {
+	res.render("searchpost")
+})
 
 app.get("/signup", function(req, res) {
 	res.render('signup')
@@ -45,7 +52,6 @@ app.get(["/", "/home"], function(req, res) {
 })
 
 app.get("/postmessage", function(req, res) {
-
 	if(req.session.userId === undefined) {
 		res.end("Your are not logged in")
 	}
@@ -222,15 +228,12 @@ app.get('/viewmessagesofuser', function(req, res) {
 app.post("/followhandler", function(req, res) {
 	let userId = req.session.userId
 	let followId = req.body.followId
-	
-	User.findById(userId)
-	.then( currentUser => {
-		User.findById(followId)
-		.then( follows => {
-			currentUser.addUser(follows)
-		})
-	})
-	.catch(e => console.log(e))	
+
+	User.findById(userId).then( currentUser => {
+	    User.findById(followId).then( follows => {
+	        currentUser.addFollowed(follows); 
+	    });
+	});
 })
 
 app.post("/unfollowhandler", function(req, res) {
@@ -241,7 +244,7 @@ app.post("/unfollowhandler", function(req, res) {
 	.then( currentUser => {
 		User.findById(followedId)
 		.then( follows => {
-			currentUser.removeUser(follows)
+			currentUser.removeFollowed(follows)
 		})
 	})
 	.catch(e => console.log(e))
@@ -249,33 +252,120 @@ app.post("/unfollowhandler", function(req, res) {
 
 app.get("/viewfollowed", function(req, res) {
 	let userId = req.session.userId
-	//maybe implement in followers the followed and their followers as well so that it is possible to count those and give and overview
-	User.findById(userId, {include: [User]})
+	
+	User.findById(userId)
 	.then( user => {
-		let followed = user.users
-		res.render("showfollowed", {followed, userId})
+		user.getFolloweds()
+		.then( followeds => {
+			res.render("showfollowed", {followeds, userId})
+		})		
 	})	
 })
 
 app.get("/viewfollowers", function(req, res) {
 	let userId = req.session.userId
 
-	User.findAll({
-	    include: [{
-	        model: User,
-	    }],
-	    where: { userId: {$col: 'user.userId'}}
+	User.findById(userId)
+	.then( user => {
+		user.getFollowers()
+		.then( followers => {
+			res.render("showfollowers", {followers, userId})
+		})		
 	})
-	.then( followers => {
-		res.render("showfollowers", {followers, userId})
+})
 
+app.post('/livesearch', function(req, res) {
+    let typed = req.body.typed
+
+    User.findAll()
+    .then( users => {
+    	//custom function at bottom of this file
+    	return searchUser(users, typed)
+    })
+    .then( searchResult => {
+    	res.send(searchResult)
+    })
+})
+
+app.post("/livesearchpost", function(req, res) {
+	let typed = req.body.typed
+
+	Post.findAll()
+	.then( posts => {
+		//custom function at bottom of this file
+		return searchPost(posts, typed)
 	})
+	.then( searchResult => {
+		console.log("Result: " + searchResult)
+		res.send(searchResult)
+	})
+})
 
-	//if I follow someone else he will stop being a follower of me unless that person is myself?!
+app.post("/searchposthandler", function(req, res) {
+	let title = req.body.typed
+	let userId = req.session.userId
 
+	Post.findAll({where: {title: title}, 
+		include: [User, 
+			{
+				model: Comment,
+				include: [
+					User
+				]
+			}
+		]
+	})
+	.then(posts => {
+		res.render("showallmessages2", {posts, userId})
+	})
+})
+
+app.post("/searchuserhandler", function(req, res) {
+	let userName = req.body.typed
+	userName = userName.split(" ")
+
+	//when searched for combination of first- and lastname
+	if(userName.length === 2) {
+	User.findAll({ where: {firstName: userName[0], lastName: userName[1]}})
+	.then(followers => {
+		res.render("showfollowers", {followers}) //followers as a name is not optimal, but the principle is very similar
+	})}
+	//when just searched for firstName (just lastName not implemented)
+	else if (userName.length === 1) {
+		UserName.findAll({ where: {firstName: userName[0], lastName: userName[1]}})
+		.then(followers => {
+		res.render("showfollowers", {followers}) //name of pug file and variable are not optimal, but the principle is very similar
+		})
+	}
 })
 
 let server = app.listen(3000, function () {
 	console.log('Server running on port: ' + server.address().port)
 })
 
+//custom functions
+function searchUser(users, typed) {
+	let fullName = ""
+	//returns search result if found else default(undefined)
+	for(let i = 0; i <= (users.length - 1); i++) {
+		let fullName =  users[i].firstName + users[i].lastName
+		let partialName = fullName.slice(0, typed.length)
+		
+		if(partialName === typed){
+			return (users[i].firstName + " " + users[i].lastName)
+		}
+	}
+}
+
+function searchPost(posts, typed) {
+	let title = ""
+	//returns search result if found else default(undefined)
+	for(let i = 0; i <= (posts.length - 1); i++) {
+		let title =  posts[i].title
+		let partialName = title.slice(0, typed.length)
+		
+		if(partialName === typed){
+			return (posts[i].title)
+		}
+	}
+}

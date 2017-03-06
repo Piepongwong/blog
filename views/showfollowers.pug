@@ -9,7 +9,7 @@ html
 			p You have no followers
 		each user in followers
 			div(id="total" + user.id)
-				img(src='images/user-icon.png', width="25", id=user.id)
+				img(src='images/follow-icon.png', class="follow" width="25", id=user.id)
 				div(class="followers-card" id=user.id)
 					p #{user.firstName}
 					p #{user.lastName}

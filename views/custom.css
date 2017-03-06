@@ -3,12 +3,11 @@ body {
   font-family: 'RobotoDraft', 'Roboto', sans-serif;
   font-size: 15;
   background: #e6e6ff;
-
 }
 
 .container {
-	background: #e6e6ff;
-	z-index: -1;
+  background: #e6e6ff;
+  z-index: -1;
 }
 	
 .form-container	 {
@@ -29,7 +28,7 @@ body {
   outline: none;
  }
 
- .form-container .form input, .message-container .input {
+form input, .message-container .input {
   outline: none;
   display: block;
   border: 1px solid #d9d9d9;
@@ -39,32 +38,30 @@ body {
  }
 
  .form-container .form input:focus, .message-container input:focus {
-   border: 1px solid #33b5e5;
-   color: #333333;	
+  border: 1px solid #33b5e5;
+  color: #333333;	
  }
 
- .form-container .form button{
- 	outline: none;
- 	display: block;
- 	border: 1px solid #d9d9d9;
-  	margin: 0 0 20px;
-  	padding: 10px 15px;
-  	width: 100%;
-
+form button{
+  outline: none;
+  display: block;
+  border: 1px solid #d9d9d9;
+  margin: 0 0 20px;
+  padding: 10px 15px;
+  width: 100%;
  }
 
- .form-container .form button:hover {
- 	  background: #178ab4;
+form button:hover {
+ 	background: #178ab4;
  }
 
  .message-container {
-   	background: #ffffff;	
- 	width: 50%;
- 	margin: 0 auto;
- 	display: block;
- 	margin-top: 2%;
+ 	background: #ffffff;	
+	width: 50%;
+	margin: 0 auto;
+	display: block;
+	margin-top: 2%;
  }
-
 
 .container .message-container .message-comment-container {
 	height: 20px;
@@ -89,10 +86,10 @@ body {
  }
  
  .message-container button {
- 	outline: none;
- 	border: 1px solid #d9d9d9;
-  	margin: 0 auto;
-  	padding: 5px 15px;
+	outline: none;
+	border: 1px solid #d9d9d9;
+	margin: 0 auto;
+	padding: 5px 15px;
  }
 
  .message-container .comment-user {

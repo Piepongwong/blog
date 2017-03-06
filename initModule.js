@@ -16,24 +16,34 @@ sequelize
   console.log('Unable to connect to the database:', err);
 })
 
-//define Users
-const User = sequelize.define('user', {
-  firstName: {
-    type: Sequelize.STRING
+/*const FollowerFollowed = sequelize.define('followerFollowed', {
+  followedId: {
+    type: Sequelize.INTEGER
   },
-  lastName: {
-    type: Sequelize.STRING
-  },
-  email: {
-    type: Sequelize.STRING
-  },
-  password: {
-    type: Sequelize.STRING
-  },
-  activated: {
-    type: Sequelize.BOOLEAN
-  }
+
+  followerId: {
+    type: Sequelize.INTEGER
+  }  
 })
+*/
+//define Users
+  const User = sequelize.define('user', {
+    firstName: {
+      type: Sequelize.STRING
+    },
+    lastName: {
+      type: Sequelize.STRING
+    },
+    email: {
+      type: Sequelize.STRING
+    },
+    password: {
+      type: Sequelize.STRING
+    },
+    activated: {
+      type: Sequelize.BOOLEAN
+    }
+  })
 
 //define Posts
 const Post = sequelize.define('post', {
@@ -55,20 +65,18 @@ const Comment = sequelize.define('comment', {
 User.hasMany(Post)
 Post.belongsTo(User)
 
-User.hasMany(Comment)
+User.hasMany(Comment) 
 Comment.belongsTo(User)
 
 Post.hasMany(Comment)
 Comment.belongsTo(Post)
 
-User.hasMany(User)
-User.belongsToMany(User, {as: "Follower", through: "Follower"})
 
-//Create mock data here e.g.: users posts followers comments
-
+User.belongsToMany(User, {as: {singular: "Follower", plural: "Followers"}, foreignKey: "FollowerId", through: "Follower_Followeds"})
+User.belongsToMany(User, {as: {singular: "Followed", plural: "Followeds"}, foreignKey: "FollowedId", through: "Follower_Followeds"})
 
 module.exports = { 
- //Define Users
+  //Define Users
   User: User,
   //Define Posts
   Post: Post,
