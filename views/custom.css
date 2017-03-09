@@ -104,3 +104,9 @@ form button:hover {
   margin-right: 40px;
   font-size: 8;
  }
+
+ .error {
+  display: none;
+  color: red;
+  font-size: 8px;
+ }

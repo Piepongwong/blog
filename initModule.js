@@ -16,16 +16,6 @@ sequelize
   console.log('Unable to connect to the database:', err);
 })
 
-/*const FollowerFollowed = sequelize.define('followerFollowed', {
-  followedId: {
-    type: Sequelize.INTEGER
-  },
-
-  followerId: {
-    type: Sequelize.INTEGER
-  }  
-})
-*/
 //define Users
   const User = sequelize.define('user', {
     firstName: {

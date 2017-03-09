@@ -4,22 +4,34 @@ html
 	head
 		title="Sign up"
 		style
-			include custom.css		
+			include custom.css
+		script(src='/javascript/jquery.js')
+		script(src='/javascript/custom.js')
 	body
 		//- include navbar.pug
+
 		div(class="form-container")
 			div(class="form")
 				h2 Sign up
-				form(method="POST" action="signuphandler") 
-					input(type="text" name="firstName" value="First_name") 
+				form(method="POST" onsubmit="return validateSignup()" action="signuphandler" class="form-sheet") 
+					input(id="firstName" type="text" name="firstName" value="First name")
+					div(class="error")
+						p * Please provide your first name 
 					br
-					input(type="text" name="lastName" value="Last_name")
+					input(id="lastName" type="text" name="lastName" value="Last name")
+					div(class="error")
+						p * Please provide your last name 	
 					br
-					input(type="text" name="email" value="email")
+					input(id="email" type="text" name="email" value="email")
+					div(class="error")
+						p * Please provide a valid email adress
 					br
-					input(type="password" name="password" value="Password")
+					input(id="password" type="password" name="password" value="Password")
+					div(class="error")
+						p * Passwords do not match
 					br
-					input(type="password" name="passwordCheck" value="Password")
+					input(id="passwordCheck" type="password" name="passwordCheck" value="Password")
+					div(class="error")
+						p * Passwords do not match
 					br
 					button(type="submit" value="submit") Sign up
-			

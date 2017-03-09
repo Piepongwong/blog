@@ -5,15 +5,18 @@ html
 		title="Log in"
 		style
 			include custom.css
+		script(src='/javascript/jquery.js')
+		script(src='/javascript/custom.js')
 	body
 		//- include navbar.pug
 		div(class="form-container")
 			div(class="form")
 				h2 Login to your account
-				form(method="POST" action="loginhandler") 
-					input(type="text" name="email" value="email")
+				form(method="POST" onsubmit="return validateLogin()" action="loginhandler") 
+					input(id="email" type="text" name="email" value="email")
 					br
-					input(type="password" name="password" value="Password")
+					input(id="password" type="password" name="password" value="Password")
+					p(class="error") * Invalid password or email
 					br
 					button(type="submit" value="submit") Login
 				

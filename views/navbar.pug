@@ -6,23 +6,20 @@ if userId
 	div(class="navbar")
 		ul
 			li
+				div(class="dropdown")
+					img(src="images/menuIcon.png" id="dropdown-icon")
+					div(class="dropdown-content")
+						a(href="viewmessages" ) messages 
+						a(href="viewmessagesofuser") own messages 
+						a(href="viewfollowed")  followed
+						a(href="viewfollowers") followers
+						a(href="postmessage") post message
+						a(href="search") search user
+						a(href="searchpost") search post
+			li
 				a(href="home") home
-			ul(class="dropdown")
-				li
-					a(href="viewmessages") all messages 
-				li
-					a(href="viewmessagesofuser") own messages 
-				li
-					a(href="viewfollowed") view followed
-				li
-					a(href="viewfollowers") view followers
-				li
-					a(href="postmessage") post message
-				li
-					a(href="search") search user
-				li
-					a(href="searchpost") search post
-
+			li
+				a(href="viewmessages") all messages
 		ul(class="in-out")
 			li
 				a(href="logout") logout

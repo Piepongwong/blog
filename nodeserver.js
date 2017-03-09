@@ -28,7 +28,8 @@ app.get("/search", function(req, res) {
 })
 
 app.get("/searchpost", function (req, res) {
-	res.render("searchpost")
+	let userId = req.session.userId
+	res.render("searchpost", {userId})
 })
 
 app.get("/signup", function(req, res) {
@@ -71,6 +72,8 @@ app.post('/signuphandler', function(req, res){
 	let password = req.body.password
 	let passwordCheck = req.body.passwordCheck
 
+	console.log("reached")
+
 	if(password != passwordCheck) {
 		res.send("Passwords do not match you dumbass!")
 	}
@@ -100,7 +103,6 @@ app.post('/loginhandler', function(req, res){
 
 	User.findOne({where: {email: email}})
 		.then(function(userRow){
-			
 			if( (password != userRow.password)) {
 				console.log("Hmm, sure you got everything right?")
 				res.redirect("/login")
@@ -322,22 +324,40 @@ app.post("/searchposthandler", function(req, res) {
 
 app.post("/searchuserhandler", function(req, res) {
 	let userName = req.body.typed
+	let userId = req.session.userId
 	userName = userName.split(" ")
 
 	//when searched for combination of first- and lastname
 	if(userName.length === 2) {
 	User.findAll({ where: {firstName: userName[0], lastName: userName[1]}})
 	.then(followers => {
-		res.render("showfollowers", {followers}) //followers as a name is not optimal, but the principle is very similar
+		res.render("showfollowers", {followers, userId}) //followers as a name is not optimal, but the principle is very similar
 	})}
 	//when just searched for firstName (just lastName not implemented)
 	else if (userName.length === 1) {
 		UserName.findAll({ where: {firstName: userName[0], lastName: userName[1]}})
 		.then(followers => {
-		res.render("showfollowers", {followers}) //name of pug file and variable are not optimal, but the principle is very similar
+		res.render("showfollowers", {followers, userId}) //name of pug file and variable are not optimal, but the principle is very similar
 		})
 	}
 })
+
+app.post("/checkmailavailability", function(req, res) {
+	let email = req.body.email
+
+	User.findAll({where: {email: email}})
+	.then( result => {
+		//result.length is to check if user with email adress is found
+		if(result.length === 0) {
+			res.send("not found")
+		}
+		else {
+			console.log("found")
+			res.send("found")
+		}
+	})
+})
+
 
 let server = app.listen(3000, function () {
 	console.log('Server running on port: ' + server.address().port)
