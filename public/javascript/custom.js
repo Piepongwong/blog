@@ -60,7 +60,7 @@ function validateSignup() {
 	}
 	else {
 		return false
-		} 
+	} 
 }
 
 function validateLogin() {
@@ -84,7 +84,7 @@ function validateLogin() {
 	else {
 		$('#password').next().css("display", "inline")
 		return false
-		} 	
+	} 	
 }
 
 function checkMailAvailability(email) {

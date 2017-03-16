@@ -3,6 +3,15 @@ let bodyParser = require('body-parser')
 let session = require('express-session');
 let db = require('./initModule.js')
 let app = express()
+let bcrypt = require('bcrypt-as-promised')
+const nodemailer = require('nodemailer'); //sandgrid?
+
+let multer  = require('multer');
+let upload = multer({ dest: 'upload/'});
+let fs = require('fs');
+
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 let User = db.User
 let Post = db.Post
@@ -11,6 +20,7 @@ let sequelize = db.sequelize
 
 //necessary?
 app.use(bodyParser.urlencoded({ extended: true })); 
+
 
 app.set('view engine', 'pug');
 app.set('views','./views');
@@ -64,6 +74,23 @@ app.get("/login", function(req, res) {
 	res.render('login')
 })
 
+app.get("/profile", function(req, res) {
+	res.render("profile")
+})
+
+app.post('/uploadhandler', upload.single("profilepic"), function (req,res) {
+
+  /** When using the "single"
+      data come in "req.file" regardless of the attribute "name". **/
+  var tmp_path = req.file.path;
+
+  /** The original name of the uploaded file
+      stored in the variable "originalname". **/
+  var target_path = 'uploads/' + req.file.originalname;
+
+  console.log(tmp_path)
+})
+
 //Signup Handler
 app.post('/signuphandler', function(req, res){
 	let firstName = req.body.firstName
@@ -72,28 +99,83 @@ app.post('/signuphandler', function(req, res){
 	let password = req.body.password
 	let passwordCheck = req.body.passwordCheck
 
-	console.log("reached")
-
 	if(password != passwordCheck) {
 		res.send("Passwords do not match you dumbass!")
 	}
-	else {
+
+	bcrypt.hash(password, null, null, function(err, hash){ 
+		password = hash
+		return password
+	})
+	.then( password => {
 		User.create( {
 			firstName: firstName,
 			lastName: lastName,
 			email: email,
 			password: password
 		})
-		.then(function(newUser) {
+		.then(newUser => {
 			console.log("New User created: " + newUser.get({
-				plain: true
-			}))
+					plain: true
+				})
+			)
+			let transporter = nodemailer.createTransport({
+			    service: 'gmail',
+			    auth: {
+			        user: process.env.GMAIL_USERNAME,
+			        pass: process.env.GMAIL_PASSWORD
+			    }
+			});
+			
+			//this validation hash is the same for every user. 	
+			let activate = bcrypt.hash("activate", null, null, function(err, hash){ 
+				return hash
+			})
+
+			// setup email data with unicode symbols
+			let mailOptions = {
+			    from: '"Fred Foo 👻" <foo@blurdybloop.com>', // sender address
+			    to: newUser.email, // list of receivers
+			    subject: 'Activate your account', // Subject line
+			    text: 'Please activate your account', // plain text body
+			    html: '<b>Please activate your account</b>' // html body
+			};
+
+			transporter.sendMail(mailOptions, (error, info) => {
+			    if (error) {
+			        return console.log(error);
+			    }
+			    console.log('Message %s sent: %s', info.messageId, info.response);
+			});
+		})
+		.then( function(){
 			res.redirect("login")
 		})
-		.catch(function(e) {
-			console.log("An error has occured, you probably did something dumb, you dumbass!")
+	})
+	.catch(function(e) {
+		console.log(e)
+	})	
+})
+
+//test
+app.get("/validationhandler", function(req, res) {
+	let validationhash = req.params.val
+	let userId = req.params.userId
+
+	bcrypt.compare("activate", validationhash, function(err, res) {
+	})
+	.then( userId => {
+		return User.findById(userId)
+	})
+	.then(user => {
+		user.update({
+			activated: true
 		})
-	}
+	})
+	.then( function() {
+		//do something
+	})
+
 })
 
 //Login Handler
@@ -102,25 +184,26 @@ app.post('/loginhandler', function(req, res){
 	let password = req.body.password
 
 	User.findOne({where: {email: email}})
-		.then(function(userRow){
-			if( (password != userRow.password)) {
-				console.log("Hmm, sure you got everything right?")
-				res.redirect("/login")
-			}
-			else if(password === userRow.password) {
-				console.log("Well hello there, " + userRow.firstName)
-				//start session
-				req.session.userId = userRow.id
-				req.session.loggedIn = true
-				req.session.firstName = userRow.firstName
-				res.redirect('/viewmessagesofuser')
-			}
+	.then(function(userRow){
+		bcrypt.compare(password, userRow.password, function(err, res) {
 		})
-		.catch(function(e) {
-			console.log("An error has occured, you probably did something dumb, you dumbass!")
+		.then( function() {
+			console.log("Well hello there, " + userRow.firstName)
+			//start session
+			req.session.userId = userRow.id
+			req.session.loggedIn = true
+			req.session.firstName = userRow.firstName
+			res.redirect('/viewmessagesofuser')		
+		})
+		.catch(function(e){
 			console.log(e)
-			res.end()
+			res.redirect("/login")
 		})
+	})
+	.catch(function(e) {
+		console.log(e)
+		res.end()
+	})
 })
 
 //Post Message Handler
@@ -199,7 +282,6 @@ app.get('/viewmessagesofuser', function(req, res) {
 	if(req.session.userId === undefined){
 		res.redirect("login")
 	}
-
 	let userId = req.session.userId //session variable	
 	
 	console.log("THIS IS THE FOLLOWED ID: " + req.query.followedId)
@@ -207,7 +289,6 @@ app.get('/viewmessagesofuser', function(req, res) {
 	if(req.query.followedId != undefined) {
 		userId = req.query.followedId
 	}	
-
 	let allPosts;
 
 	Post.findAll( 
@@ -359,7 +440,7 @@ app.post("/checkmailavailability", function(req, res) {
 })
 
 
-let server = app.listen(3000, function () {
+let server = app.listen(2500, function () {
 	console.log('Server running on port: ' + server.address().port)
 })
 
